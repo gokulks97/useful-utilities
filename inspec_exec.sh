@@ -10,6 +10,8 @@
 #6) now going forward once new control needs to be ran
 # 6.1) type ./ins and then clikc <tab> and copy paste the control id/title with double quotes..
 
+#7) working with different profiles and different inspec targets, then update the below syntax as necessary and then your are good to go..
+
 # the control id from terminal will be available in $1
 # inspec exec ../<path-to-profile> -t ssh://<user-name>@<ip-address> -i ~/<path/file_name>.pem --controls $1 --sudo
 inspec exec ../src/inspec/supported/cis-oraclelinux7-level2-server-v3.1.1 -t ssh://pc2-u5er@255.255.255.255 -i ~/Downloads/sample.pem --controls $1 --sudo
