@@ -1,3 +1,4 @@
+# need to have spreadsheet gem in local
 require "spreadsheet"
 file_name = "/Users/gokulks/Documents/code_repo/chef_repos/compliance-profiles/src/inspec/supported/cis-oraclelinux7-level2-server-v3.1.1/controls/translated-controls.rb"
 output_file_name = "cont_id_title.xls" 
