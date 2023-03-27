@@ -3,7 +3,7 @@ require "spreadsheet"
 # specify the location for file_name variable as per your repo path
 # it has to be, path of translated_control.rb which is having the most controls for that profile
 file_name = "/Users/gokulks/Documents/code_repo/chef_repos/compliance-profiles/src/inspec/supported/cis-oraclelinux7-level2-server-v3.1.1/controls/translated-controls.rb"
-output_file_name = "cont_id_title.xls" 
+output_file_name = "cont_id_title.xls"
 file_content = File.read(file_name)
 book = Spreadsheet::Workbook.new
 sheet1 = book.create_worksheet
@@ -18,4 +18,4 @@ file_content.scan(/xccdf_org.cisecurity.benchmarks_rule_[\d\.]+_.*(?=\")/).each 
   row_count += 1
 end
 sheet1.column(1).outline_level = 1
-book.write 'cont_id_title.xls'
+book.write output_file_name
