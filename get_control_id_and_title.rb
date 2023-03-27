@@ -10,12 +10,22 @@ sheet1 = book.create_worksheet
 File.delete(output_file_name) if File.exist?(output_file_name)
 control_id_list = []
 row_count = 0
-file_content.scan(/xccdf_org.cisecurity.benchmarks_rule_[\d\.]+_.*(?=\")/).each do |x|
-  x = x.gsub("xccdf_org.cisecurity.benchmarks_rule_","")
-  c_id = x.scan(/[\d.]+/)[0]
-  title = x.scan(/(?<=_).*/)[0].gsub("_"," ")
-  sheet1.update_row row_count, c_id, title 
-  row_count += 1
+if file_content.match? /xccdf_org.cisecurity.benchmarks_rule_/
+  file_content.scan(/xccdf_org.cisecurity.benchmarks_rule_[\d\.]+_.*(?=\")/).each do |x|
+    x = x.gsub("xccdf_org.cisecurity.benchmarks_rule_","")
+    c_id = x.scan(/[\d.]+/)[0]
+    title = x.scan(/(?<=_).*/)[0].gsub("_"," ")
+    sheet1.update_row row_count, c_id, title 
+    row_count += 1
+  end
+elsif file_content.match? /xccdf_mil.disa.stig_rule_/
+  titles = file_content.scan /(?<=title \").*(?=\"$)/
+  file_content.scan(/(?<=xccdf_mil.disa.stig_rule_).*(?=_rule\" do$)/).each_with_index do |x,i|
+    c_id = x
+    title = titles[i]
+    sheet1.update_row row_count, c_id, title
+    row_count += 1
+  end
 end
 sheet1.column(1).outline_level = 1
 book.write output_file_name
