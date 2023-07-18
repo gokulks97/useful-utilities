@@ -33,35 +33,39 @@ sheet1 = book.create_worksheet
 File.delete(output_file_name) if File.exist?(output_file_name)
 
 def get_controls_link(profile, email_id, pwd)
-  @options = Selenium::WebDriver::Chrome::Options.new
-  @options.add_argument '--headless'
-  @options.add_argument('user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) \'Chrome/94.0.4606.81 Safari/537.36\'')
-  @driver = Selenium::WebDriver.for :chrome, options: @options
-  puts 'driver assigned with chrome driver'
-  cis_http_link = 'https://workbench.cisecurity.org'
-  @driver.get cis_http_link + '/'
-  puts '$$ CIS login page reached $$'
-  email_locator = @driver.find_element(name: 'login')
-  password_locator = @driver.find_element(id: 'password')
-  email_locator.send_key(email_id)
-  password_locator.send_key(pwd)
-  login_button = @driver.find_element(class: 'login-submit-btn')
-  login_button.click
-  puts '$$ Reaching CIS Profile $$'
-  @driver.get cis_http_link + '/benchmarks/' + profile
-  sleep 2
-  html_page = @driver.page_source
-  control_links = html_page.scan(/href.*recommendations.*title.*\s-.*?\"/)
-  sleep 2
-  controls = {}
-  control_links.each do |control_w_link|
-    id = control_w_link.scan(/(?<=title\=")[\d.]+\d(?=\s)/)[0]
-    control_title = control_w_link.scan(/(?<=\d - ).*(?=\")/)[0]
-    controls[id] = control_title unless id.nil?
+  begin
+    @options = Selenium::WebDriver::Chrome::Options.new
+    @options.add_argument '--headless'
+    @options.add_argument('user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) \'Chrome/94.0.4606.81 Safari/537.36\'')
+    @driver = Selenium::WebDriver.for :chrome, options: @options
+    puts '$$ Driver assigned with chrome driver $$'
+    cis_http_link = 'https://workbench.cisecurity.org'
+    @driver.get cis_http_link + '/'
+    puts '$$ CIS login page reached $$'
+    email_locator = @driver.find_element(name: 'login')
+    password_locator = @driver.find_element(id: 'password')
+    email_locator.send_key(email_id)
+    password_locator.send_key(pwd)
+    login_button = @driver.find_element(class: 'login-submit-btn')
+    login_button.click
+    puts '$$ Reaching CIS Profile $$'
+    @driver.get cis_http_link + '/benchmarks/' + profile
+    sleep 2
+    html_page = @driver.page_source
+    control_links = html_page.scan(/href.*recommendations.*title.*\s-.*?\"/)
+    sleep 2
+    controls = {}
+    control_links.each do |control_w_link|
+      id = control_w_link.scan(/(?<=title\=")[\d.]+\d(?=\s)/)[0]
+      control_title = control_w_link.scan(/(?<=\d - ).*(?=\")/)[0]
+      controls[id] = control_title unless id.nil?
+    end
+    puts '$$ Controls Obtained $$'
+    controls
+  rescue => exception
+    @driver.quit
+    raise "\nSome internal error contact the developer"
   end
-  puts 'controls obtained'
-  @driver.quit
-  controls
 end
 
 controls = get_controls_link profile.match?(%r{^http.*\/\d+$}) ? profile.scan(/(?<=benchmarks\/).*\d+$/)[0] : profile, email_id, pwd
