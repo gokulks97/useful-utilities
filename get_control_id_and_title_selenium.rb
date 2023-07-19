@@ -33,14 +33,14 @@ sheet1 = book.create_worksheet
 File.delete(output_file_name) if File.exist?(output_file_name)
 
 def get_controls_link(profile, email_id, pwd)
+  @options = Selenium::WebDriver::Chrome::Options.new
+  @options.add_argument '--headless'
+  @options.add_argument('user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) \'Chrome/94.0.4606.81 Safari/537.36\'')
+  @driver = Selenium::WebDriver.for :chrome, options: @options
+  puts '$$ Driver assigned with chrome driver $$'
+  cis_http_link = 'https://workbench.cisecurity.org'
+  @driver.get cis_http_link + '/'
   begin
-    @options = Selenium::WebDriver::Chrome::Options.new
-    @options.add_argument '--headless'
-    @options.add_argument('user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) \'Chrome/94.0.4606.81 Safari/537.36\'')
-    @driver = Selenium::WebDriver.for :chrome, options: @options
-    puts '$$ Driver assigned with chrome driver $$'
-    cis_http_link = 'https://workbench.cisecurity.org'
-    @driver.get cis_http_link + '/'
     puts '$$ CIS login page reached $$'
     email_locator = @driver.find_element(name: 'login')
     password_locator = @driver.find_element(id: 'password')
