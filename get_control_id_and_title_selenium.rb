@@ -1,7 +1,7 @@
 
 # need to have spreadsheet gem in local
 require 'spreadsheet'
-require 'webdrivers'
+require 'selenium-webdriver'
 
 email_id = ''
 pwd = ''
@@ -13,14 +13,14 @@ profile = benchmark_link.empty? ? '' : benchmark_link
 raise "\nBenchmark link is not provided: Provide benchmark link" if profile.empty?
 
 if email_id.nil? || email_id.empty?
-  print "Enter the email id of CIS website: " 
+  print 'Enter the email id of CIS website: '
   email_id_i = gets.chomp
   email_id = email_id_i.empty? ? '' : email_id_i
   raise "\n  Email ID is not provided: \nProvide Email ID or assign the email id in rb file directly" if email_id.empty?
 end
 
 if pwd.nil? || pwd.empty?
-  print "Enter the password of CIS website: " 
+  print 'Enter the password of CIS website: '
   pwd_i = gets.chomp
   pwd = pwd_i.empty? ? '' : pwd_i
   raise "\n  Password is not provided: \nProvide provide or assign the password in rb file directly" if pwd.empty?
@@ -35,7 +35,7 @@ File.delete(output_file_name) if File.exist?(output_file_name)
 def get_controls_link(profile, email_id, pwd)
   @options = Selenium::WebDriver::Chrome::Options.new
   @options.add_argument '--headless'
-  @options.add_argument('user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) \'Chrome/94.0.4606.81 Safari/537.36\'')
+  @options.add_argument('user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) \'Chrome/94.0.4606.61 Safari/537.36\'')
   @driver = Selenium::WebDriver.for :chrome, options: @options
   puts '$$ Driver assigned with chrome driver $$'
   cis_http_link = 'https://workbench.cisecurity.org'
